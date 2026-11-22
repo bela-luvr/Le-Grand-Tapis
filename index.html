@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Le Grand Tapis – Casino virtuel</title>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e241d;--felt:#15392d;--felt2:#1c4a3b;--ink:#f4edda;--mute:#9bb5a8;--brass:#e0a93b;--red:#b8283a;--blk:#16191c;--line:#2d6350;
+color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:radial-gradient(120% 80% at 50% 0,#1d4d3d,var(--bg));background-color:var(--bg);color:var(--ink);font:16px/1.4 Outfit,system-ui,sans-serif;min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer;border:0;touch-action:manipulation}
+button:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;position:sticky;top:0;background:var(--bg);z-index:5;border-bottom:1px solid var(--line)}
+h1,h2{font-family:'Abril Fatface',Georgia,serif;font-weight:400;margin:0}
+h1{font-size:22px;color:var(--brass)}
+#bal{font-weight:700;background:var(--blk);border:2px solid var(--brass);border-radius:99px;padding:6px 14px}
+main{max-width:560px;margin:0 auto;padding:16px}
+.back{background:none;color:var(--mute);padding:8px 0;font-weight:600}
+.games{display:grid;gap:14px}
+.game{background:var(--felt);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;gap:14px;align-items:center;text-align:left;width:100%}
+.game .ic{font-size:44px}
+.game h2{font-size:24px}
+.game p{margin:2px 0 0;color:var(--mute);font-size:14px}
+.btn{background:var(--brass);color:#2a1d02;font-weight:700;border-radius:12px;padding:13px 18px;min-height:48px}
+.btn.alt{background:var(--felt2);color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.row>*{flex:1}
+.chips{display:flex;gap:10px;justify-content:center;margin:14px 0}
+.chip{width:58px;height:58px;border-radius:50%;background:var(--red);border:4px dashed #f4edda;font-weight:700;box-shadow:0 0 0 3px var(--red)}
+.chip.on{background:var(--brass);color:#2a1d02;box-shadow:0 0 0 3px var(--brass);transform:translateY(-4px)}
+.table{background:var(--felt);border:1px solid var(--line);border-radius:18px;padding:14px;margin:12px 0}
+.seat{padding:8px 0;border-bottom:1px solid var(--line)}.seat:last-child{border:0}
+.seat b{display:flex;justify-content:space-between;font-size:14px;color:var(--mute)}
+.hand{display:flex;gap:6px;margin-top:6px;min-height:62px;flex-wrap:wrap}
+.c{background:#faf5e6;color:#16191c;border-radius:8px;width:44px;height:62px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;box-shadow:0 2px 4px #0006}
+.c.r{color:#b8283a}.c.back{background:repeating-linear-gradient(45deg,#7b1f2b,#7b1f2b 5px,#5e1620 5px,#5e1620 10px);color:transparent}
+.msg{text-align:center;font-weight:600;min-height:26px;margin:10px 0}
+.win{color:#7be0a4}.lose{color:#ff8d8d}
+.log{font-size:14px;color:var(--mute);margin:8px 0}.log div{padding:2px 0}
+.wheel{width:120px;height:120px;border-radius:50%;margin:10px auto;display:flex;align-items:center;justify-content:center;font:48px 'Abril Fatface',serif;border:6px solid var(--brass);background:var(--blk)}
+.wheel.R{background:var(--red)}.wheel.G{background:#1d7a47}
+.hist{display:flex;gap:6px;justify-content:center;margin-bottom:8px}
+.hist span{width:28px;height:28px;border-radius:50%;font-size:12px;display:flex;align-items:center;justify-content:center;background:var(--blk)}
+.hist .R,.n.R{background:var(--red)}.hist .G,.n.G{background:#1d7a47}
+.bets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bets button,.nums button{background:var(--felt2);border:1px solid var(--line);border-radius:10px;padding:12px 4px;position:relative;font-weight:600}
+.bets .R{background:var(--red)}.bets .B{background:var(--blk)}
+.nums{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin:10px 0}
+.nums button{padding:9px 0;font-size:13px}.nums .B{background:var(--blk)}.nums .R{background:var(--red)}.nums .G{background:#1d7a47}
+i.a{position:absolute;top:-6px;right:-4px;background:var(--brass);color:#2a1d02;font:700 11px Outfit;border-radius:99px;padding:1px 6px}
+.reels{display:flex;gap:10px;justify-content:center;margin:16px 0}
+.reel{width:88px;height:104px;background:#faf5e6;border-radius:14px;font-size:52px;display:flex;align-items:center;justify-content:center;border:4px solid var(--brass)}
+.pay{font-size:13px;color:var(--mute);text-align:center}
+.board{background:var(--felt);border:1px solid var(--line);border-radius:18px;padding:14px;margin:14px 0}
+.board h2{font-size:20px;margin-bottom:8px}
+.board .l{display:flex;justify-content:space-between;padding:4px 0}
+.board .me{color:var(--brass);font-weight:700}
+.vip{color:var(--brass);font-weight:600;font-size:14px;margin-bottom:8px}
+.vp .c{width:54px;height:78px;font-size:21px;position:relative;transition:transform .15s}
+.vp .hold{transform:translateY(-10px);outline:3px solid var(--brass)}
+.die{font-size:84px;line-height:1}
+body{background-attachment:fixed}
+header{position:sticky}
+header::before,header::after{content:'';position:absolute;left:0;right:0;bottom:-5px;height:6px;animation:bulb 1s steps(1) infinite;pointer-events:none}
+header::before{background:radial-gradient(circle,#ffd36b 2px,transparent 3px) 0 0/16px 6px}
+header::after{background:radial-gradient(circle,#ff3d6e 2px,transparent 3px) 8px 0/16px 6px;animation-delay:.5s;opacity:0}
+@keyframes bulb{0%{opacity:1}50%{opacity:0}}
+header::after{animation-name:bulb2}
+@keyframes bulb2{0%{opacity:0}50%{opacity:1}}
+#bal{text-shadow:0 0 10px #e0a93b88}
+.pop{animation:pop .6s}
+@keyframes pop{40%{transform:scale(1.25);box-shadow:0 0 28px #ffd36b}}
+.game{border:2px solid transparent;background:linear-gradient(135deg,var(--felt),var(--felt2)) padding-box,linear-gradient(90deg,#e0a93b,#ff3d6e,#7b5cff,#2fd4a6,#e0a93b) border-box;background-size:100% 100%,300% 100%;animation:neon 7s linear infinite;box-shadow:0 6px 22px #0007}
+@keyframes neon{to{background-position:0 0,-300% 0}}
+.game:active{transform:scale(.98)}
+.game .ic{animation:bob 2.6s ease-in-out infinite;filter:drop-shadow(0 0 10px #e0a93b99)}
+.game:nth-child(2) .ic{animation-delay:-.6s}.game:nth-child(3) .ic{animation-delay:-1.2s}.game:nth-child(4) .ic{animation-delay:-1.8s}
+@keyframes bob{50%{transform:translateY(-6px) rotate(6deg)}}
+.table{background:radial-gradient(ellipse at 50% 0,var(--felt2),var(--felt));box-shadow:inset 0 0 40px #0008}
+.c{animation:deal .22s backwards}
+.vp .c{animation:none}
+@keyframes deal{from{transform:translateY(-18px) rotate(-8deg);opacity:0}}
+.msg.win{animation:pop .6s;text-shadow:0 0 14px #3ddc84;font-size:20px}
+.wheel{box-shadow:0 0 34px #e0a93b66,inset 0 0 20px #0009}
+.reel{box-shadow:inset 0 0 16px #0004}
+.reel.spin{filter:blur(3px);animation:jit .1s linear infinite}
+@keyframes jit{50%{transform:translateY(7px)}}
+.reel.glow{animation:glow .6s 3;box-shadow:0 0 24px var(--brass)}
+@keyframes glow{50%{box-shadow:0 0 44px #ffd36b;transform:scale(1.07)}}
+.coin{position:fixed;top:55vh;font-size:28px;z-index:19;pointer-events:none;animation:coin 1.8s cubic-bezier(.3,.6,.5,1) forwards}
+@keyframes coin{0%{transform:translate(0,0) scale(.6);opacity:1}40%{transform:translate(calc(var(--dx)*.5),var(--dy)) rotate(180deg) scale(1.1)}100%{transform:translate(var(--dx),45vh) rotate(540deg);opacity:0}}
+.big{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:20;background:radial-gradient(circle,#e0a93b55,transparent 60%);font-family:'Abril Fatface',serif;color:#ffd36b;text-shadow:0 0 30px #ff9d00,0 4px 0 #8a5a00;text-align:center;animation:bigin 2.4s forwards}
+.big b{font-size:clamp(44px,15vw,84px);font-weight:400;line-height:1}.big span{font-size:clamp(30px,10vw,56px);color:#fff}
+@keyframes bigin{0%{transform:scale(.2);opacity:0}15%{transform:scale(1.15);opacity:1}25%{transform:scale(1)}80%{opacity:1}100%{opacity:0}}
+#app.in{animation:viewin .3s}
+@keyframes viewin{from{opacity:0;transform:translateY(12px)}}
+.chip:active,.btn:active{transform:scale(.93)}
+.dn{animation:dn .4s}
+@keyframes dn{25%{transform:translateX(-5px);border-color:#ff5a5a}75%{transform:translateX(5px)}}
+.wheel{position:relative;isolation:isolate;margin:28px auto 20px}
+.wheel::before{content:'';position:absolute;inset:-20px;border-radius:50%;z-index:-1;background:repeating-conic-gradient(var(--red) 0 9.73deg,#16191c 0 19.46deg);-webkit-mask:radial-gradient(circle closest-side,transparent 80%,#000 81%);mask:radial-gradient(circle closest-side,transparent 80%,#000 81%)}
+.wheel::after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff;top:-18px;left:calc(50% - 6px);transform-origin:6px 72px}
+.wheel.spinning::before{animation:rot .9s linear infinite}
+.wheel.spinning::after{animation:rot .55s linear infinite reverse}
+@keyframes rot{to{transform:rotate(360deg)}}
+.tick{overflow:hidden;white-space:nowrap;margin:0 0 14px;color:var(--brass);font-size:14px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.tick div{display:inline-block;animation:tick 40s linear infinite}
+@keyframes tick{to{transform:translateX(-50%)}}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--brass);color:#2a1d02;font-weight:700;padding:12px 20px;border-radius:99px;z-index:25;white-space:nowrap;animation:toast 2.8s forwards}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,20px)}10%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,0)}}
+.modal{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;z-index:15}
+.wbox{background:var(--felt);border:2px solid var(--brass);border-radius:20px;padding:20px;text-align:center;width:min(92vw,340px)}
+.wp{color:var(--brass);font-size:26px;margin-bottom:-16px;position:relative;z-index:2}
+.dw{width:210px;height:210px;border-radius:50%;margin:8px auto;position:relative;border:5px solid var(--brass);transition:transform 4.2s cubic-bezier(.12,.7,.15,1);box-shadow:0 0 30px #e0a93b66}
+.dw span{position:absolute;left:50%;top:50%;margin:-10px 0 0 -22px;width:44px;text-align:center;font-weight:700;font-size:13px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header><h1>Le Grand Tapis</h1><div style="display:flex;gap:8px;align-items:center"><button id="snd" class="back" aria-label="Son" onclick="toggleSnd()">🔊</button><div id="bal"></div></div></header>
+<main id="app"></main>
+<script>
+const $=s=>document.querySelector(s);
+const fmt=n=>Math.round(n).toLocaleString('fr-FR')+' €';
+let bal=1000,bet=50,busy=false;
+try{const s=localStorage.getItem('gt_bal');if(s!==null&&!isNaN(+s))bal=+s}catch(e){}
+let shown=bal,prev=bal,raf;
+function save(){try{localStorage.setItem('gt_bal',bal)}catch(e){}
+ const g=bal-prev;prev=bal;cancelAnimationFrame(raf);
+ const from=shown,to=bal,t0=performance.now();
+ const step=t=>{const k=Math.min(1,(t-t0)/700);shown=from+(to-from)*k;$('#bal').textContent=fmt(shown);if(k<1)raf=requestAnimationFrame(step)};
+ raf=requestAnimationFrame(step);
+ const b=$('#bal');b.classList.remove('pop','dn');void b.offsetWidth;
+ if(g>0){b.classList.add('pop');burst(g);stat(g)}else if(g<0)b.classList.add('dn');
+ const lv=tiers.filter(t=>bal>=t[0]).length;
+ if(lastLv!==undefined&&lv>lastLv){toast('⭐ Niveau '+tiers[lv-1][1]+' atteint !');jingle(6)}lastLv=lv;
+}
+const rnd=n=>Math.random()*n|0;
+const pick=a=>a[rnd(a.length)];
+const chips=()=>`<div class="chips">${[10,50,100,500].map(v=>`<button class="chip ${bet==v?'on':''}" onclick="bet=${v};rerender()">${v}</button>`).join('')}</div>`;
+let cur='lobby';
+const rerender=()=>({lobby,bj:bjView,rl:rlView,sl:slView,vp:vpView,dc:dcView})[cur]();
+function go(v){if(busy)return;cur=v;rerender();scrollTo(0,0);const a=$('#app');a.classList.remove('in');void a.offsetWidth;a.classList.add('in')}
+const back='<button class="back" onclick="go(\'lobby\')">← Retour au casino</button>';
+
+function lobby(){
+ $('#app').innerHTML=`${ticker()}<div class="games">
+ <button class="game" onclick="go('bj')"><span class="ic">🃏</span><div><h2>Blackjack</h2><p>Table avec Léa et Max, deux joueurs bots.</p></div></button>
+ <button class="game" onclick="go('rl')"><span class="ic">🎡</span><div><h2>Roulette</h2><p>Misez à côté de Zoé, Tom et Inès.</p></div></button>
+ <button class="game" onclick="go('sl')"><span class="ic">🎰</span><div><h2>Machine à sous</h2><p>Trois rouleaux, jusqu’à ×100.</p></div></button>
+ <button class="game" onclick="go('vp')"><span class="ic">♠️</span><div><h2>Vidéo poker</h2><p>Gardez vos cartes, quinte royale ×250.</p></div></button>
+ <button class="game" onclick="go('dc')"><span class="ic">🎲</span><div><h2>Dés</h2><p>Plus, moins ou sept, avec Sam et Nina.</p></div></button></div>
+ <div class="row"><button class="btn" onclick="wheelDay()">🎡 Roue du jour</button></div>${board()}${stats()}<div class="row"><button class="btn alt" onclick="bal+=1000;save();lobby()">Bonus : +1 000 €</button></div>
+ <p class="pay">Argent 100 % virtuel, uniquement pour s’amuser. Votre solde est conservé sur cet appareil.</p>`;
+}
+
+/* ---------- BLACKJACK ---------- */
+const R=['A','2','3','4','5','6','7','8','9','10','J','Q','K'],S=['♠','♥','♦','♣'];
+const draw=()=>({r:pick(R),s:pick(S)});
+const val=h=>{let t=0,a=0;h.forEach(c=>{if(c.r=='A'){a++;t+=11}else t+=(c.r=='10'||'JQK'.includes(c.r))?10:+c.r});while(t>21&&a){t-=10;a--}return t};
+const card=(c,hide)=>hide?'<span class="c back">?</span>':`<span class="c ${'♥♦'.includes(c.s)?'r':''}">${c.r}${c.s}</span>`;
+const bj={ph:'bet',me:[],d:[],mb:0,msg:'',bots:[{n:'Léa',b:1000,h:[],bet:0,res:''},{n:'Max',b:1000,h:[],bet:0,res:''}]};
+function bjView(){
+ const p=bj.ph=='play';
+ $('#app').innerHTML=`${back}<div class="table">
+ <div class="seat"><b><span>Croupier</span><span>${p?'?':bj.d.length?val(bj.d):''}</span></b><div class="hand">${bj.d.map((c,i)=>card(c,p&&i==1)).join('')}</div></div>
+ ${bj.bots.map(x=>`<div class="seat"><b><span>${av(x.n)} ${x.n} · mise ${x.bet||'–'}</span><span>${x.h.length?val(x.h):''} ${x.res}</span></b><div class="hand">${x.h.map(c=>card(c)).join('')}</div></div>`).join('')}
+ <div class="seat"><b><span>Vous · mise ${bj.mb||'–'}</span><span>${bj.me.length?val(bj.me):''}</span></b><div class="hand">${bj.me.map(c=>card(c)).join('')}</div></div></div>
+ <div class="msg ${bj.cls||''}">${bj.msg}</div>
+ ${p?`<div class="row"><button class="btn" onclick="bjHit()">Tirer</button><button class="btn alt" onclick="bjStand()">Rester</button><button class="btn alt" ${bal>=bj.mb&&bj.me.length==2?'':'disabled'} onclick="bjDouble()">Doubler</button></div>`
+ :`${chips()}<div class="row"><button class="btn" ${bal>=bet?'':'disabled'} onclick="bjDeal()">Distribuer · ${bet} €</button></div>`}`;
+}
+function bjDeal(){
+ if(bal<bet)return;bal-=bet;bj.mb=bet;save();bj.msg='';bj.cls='';
+ bj.me=[draw(),draw()];bj.d=[draw(),draw()];
+ bj.bots.forEach(x=>{if(x.b<20)x.b=1000;x.bet=Math.min(x.b,pick([20,50,100]));x.h=[draw(),draw()];x.res=''});
+ bj.ph='play';bjView();if(val(bj.me)==21)bjStand();
+}
+function bjHit(){bj.me.push(draw());val(bj.me)>=21?bjStand():bjView()}
+function bjDouble(){bal-=bj.mb;bj.mb*=2;save();bj.me.push(draw());bjStand()}
+function bjStand(){
+ const up=val([bj.d[0]]);
+ bj.bots.forEach(x=>{while(val(x.h)<(up>=7?17:13))x.h.push(draw())});
+ while(val(bj.d)<17)bj.d.push(draw());
+ const dv=val(bj.d),dbj=bj.d.length==2&&dv==21;
+ const mult=(h,dbl)=>{const v=val(h);if(v>21)return 0;if(h.length==2&&v==21&&!dbj)return 2.5;if(dv>21||v>dv)return 2;return v==dv?1:0};
+ const m=mult(bj.me),gain=bj.mb*m;bal+=gain;save();
+ bj.bots.forEach(x=>{const g=x.bet*mult(x.h)-x.bet;x.b+=g;x.res=g>0?'✅ +'+g:g<0?'❌ '+g:'='});
+ bj.ph='bet';
+ bj.msg=m>1?`Gagné ! +${fmt(gain-bj.mb)}`:m==1?'Égalité, mise rendue':`Perdu −${fmt(bj.mb)}`;
+ bj.cls=m>1?'win':m==1?'':'lose';bjView();
+}
+
+/* ---------- ROULETTE ---------- */
+const REDS=[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+const col=n=>n==0?'G':REDS.includes(n)?'R':'B';
+const rl={bets:{},last:null,hist:[],log:[]};
+const RB=[['rouge','Rouge','R'],['noir','Noir','B'],['pair','Pair',''],['impair','Impair',''],['manque','1–18',''],['passe','19–36','']];
+const wins=(k,n)=>k=='rouge'?col(n)=='R':k=='noir'?col(n)=='B':n>0&&(k=='pair'?n%2==0:k=='impair'?n%2==1:k=='manque'?n<=18:k=='passe'?n>=19:false);
+function rlView(){
+ const tot=Object.values(rl.bets).reduce((a,b)=>a+b,0),B=k=>rl.bets[k]?`<i class="a">${rl.bets[k]}</i>`:'';
+ $('#app').innerHTML=`${back}<div class="hist">${rl.hist.map(n=>`<span class="${col(n)}">${n}</span>`).join('')}</div>
+ <div class="wheel ${rl.last!==null?col(rl.last):''}" id="wh">${rl.last??'🎡'}</div>
+ <div class="log">${rl.log.map(l=>`<div>${l}</div>`).join('')}</div>
+ ${chips()}
+ <div class="bets">${RB.map(([k,t,c])=>`<button class="${c}" onclick="rlBet('${k}')">${t}${B(k)}</button>`).join('')}</div>
+ <div class="nums">${[...Array(37).keys()].map(n=>`<button class="${col(n)}" onclick="rlBet('n${n}')">${n}${B('n'+n)}</button>`).join('')}</div>
+ <div class="row"><button class="btn alt" onclick="rlClear()" ${tot?'':'disabled'}>Effacer</button><button class="btn" onclick="rlSpin()" ${tot?'':'disabled'}>Lancer · ${tot} €</button></div>
+ <p class="pay">Couleur, pair/impair, moitié : ×2 · Numéro plein : ×36</p>`;
+}
+function rlBet(k){if(busy||bal<bet)return;bal-=bet;rl.bets[k]=(rl.bets[k]||0)+bet;save();rlView()}
+function rlClear(){Object.values(rl.bets).forEach(v=>bal+=v);rl.bets={};save();rlView()}
+function rlSpin(){
+ busy=true;const w=$('#wh');let i=0;
+ const t=setInterval(()=>{const n=rnd(37);w.textContent=n;w.className='wheel spinning '+col(n);if(++i>18){clearInterval(t);rlEnd()}},90);
+}
+function rlEnd(){
+ const n=rnd(37);let gain=0,staked=0;
+ for(const[k,a]of Object.entries(rl.bets)){staked+=a;if(k[0]=='n'?+k.slice(1)==n:wins(k,n))gain+=a*(k[0]=='n'?36:2)}
+ bal+=gain;save();rl.log=[];
+ [['Zoé',['rouge','noir']],['Tom',['pair','impair','manque','passe']],['Inès',[...Array(37).keys()].map(x=>'n'+x)]].forEach(([nm,opts])=>{
+  const k=pick(opts),a=pick([20,50,100]),w=k[0]=='n'?+k.slice(1)==n:wins(k,n),lbl=k[0]=='n'?'le '+k.slice(1):(RB.find(r=>r[0]==k)[1]).toLowerCase();
+  rl.log.push(`${av(nm)} ${nm} mise ${a} € sur ${lbl} → ${w?'✅ +'+a*(k[0]=='n'?35:1)+' €':'❌ −'+a+' €'}`)});
+ rl.log.unshift(`<b class="${gain>staked?'win':gain?'':'lose'}">Sorti : ${n} ${col(n)=='R'?'rouge':col(n)=='B'?'noir':'vert'} — ${gain>staked?'vous gagnez +'+fmt(gain-staked):gain?'mise récupérée':'vous perdez '+fmt(staked)}</b>`);
+ rl.last=n;rl.hist=[n,...rl.hist].slice(0,10);rl.bets={};busy=false;rlView();
+}
+
+/* ---------- MACHINE À SOUS ---------- */
+const SY=['🍒','🍋','🔔','⭐','💎','7️⃣'],MU={'🍒':5,'🍋':8,'🔔':12,'⭐':20,'💎':40,'7️⃣':100};
+const sl={r:['🍒','🔔','7️⃣'],msg:'',cls:''};
+function slView(){
+ $('#app').innerHTML=`${back}<div class="reels">${sl.r.map((s,i)=>`<div class="reel ${sl.cls=='win'?'glow':''}" id="r${i}">${s}</div>`).join('')}</div>
+ <div class="msg ${sl.cls}">${sl.msg}</div>${chips()}
+ <div class="row"><button class="btn" ${bal>=bet?'':'disabled'} onclick="slSpin()">Tourner · ${bet} €</button></div>
+ <p class="pay">Trois identiques : 🍒×5 🍋×8 🔔×12 ⭐×20 💎×40 7️⃣×100<br>Une paire : ×1,5</p>`;
+}
+function slSpin(){
+ if(bal<bet||busy)return;busy=true;bal-=bet;save();
+ const fin=[pick(SY),pick(SY),pick(SY)];let i=0;
+ const t=setInterval(()=>{i++;tone(200+rnd(300),.03,'square',.02);for(let j=0;j<3;j++){const e=$('#r'+j),sp=i<10+j*6;e.classList.toggle('spin',sp);e.textContent=sp?pick(SY):fin[j]}
+  if(i>=22){clearInterval(t);busy=false;slEnd(fin)}},90);
+}
+function slEnd(f){
+ sl.r=f;let g=0;
+ if(f[0]==f[1]&&f[1]==f[2])g=bet*MU[f[0]];else if(f[0]==f[1]||f[1]==f[2]||f[0]==f[2])g=bet*1.5;
+ bal+=g;save();
+ sl.msg=g>=bet*5?`JACKPOT ! +${fmt(g-bet)}`:g?`Gagné +${fmt(g-bet)}`:'Perdu, retentez votre chance';
+ sl.cls=g?'win':'lose';slView();
+}
+
+/* ---------- EFFETS & SON ---------- */
+/* ---------- DÉTAILS ---------- */
+let lastLv,best=0;try{best=+localStorage.getItem('gt_best')||0}catch(e){}
+const stat=g=>{if(g>best){best=g;try{localStorage.setItem('gt_best',best)}catch(e){}}};
+const stats=()=>`<div class="board"><div class="l"><span>🏆 Plus gros gain</span><span>${fmt(best)}</span></div></div>`;
+const AVA={'Léa':'👩‍🦰','Max':'🧔','Zoé':'👱‍♀️','Tom':'🧑‍🚀','Inès':'👩‍🎤','Sam':'🕴️','Nina':'💃','Vous':'😎'};
+const av=n=>AVA[n]||'🙂';
+function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2900)}
+function ticker(){
+ const g=['au blackjack','à la roulette','aux machines à sous','au vidéo poker','aux dés'];
+ const s=Array.from({length:6},()=>{const n=pick(lb);return `${av(n.n)} ${n.n} vient de gagner ${fmt((rnd(40)+2)*100)} ${pick(g)}`}).join('   ✦   ');
+ return `<div class="tick"><div>${s}   ✦   ${s}   ✦   </div></div>`}
+const WP=[100,500,200,1000,150,300,250,2000];
+function wheelDay(){
+ let d='';try{d=localStorage.getItem('gt_day')||''}catch(e){}
+ const done=d==new Date().toDateString(),o=document.createElement('div');o.className='modal';o.id='wm';
+ o.innerHTML=`<div class="wbox"><h2>Roue du jour</h2><div class="wp">▼</div><div class="dw" id="dw" style="background:conic-gradient(${WP.map((_,i)=>`${i%2?'#16191c':'#b8283a'} ${i*45}deg ${i*45+45}deg`).join(',')})">${WP.map((p,i)=>`<span style="transform:rotate(${i*45+22.5}deg) translateY(-70px)">${p}</span>`).join('')}</div><div class="msg" id="wmsg">${done?'Déjà tournée aujourd’hui. Revenez demain !':'Un tour gratuit par jour'}</div><div class="row"><button class="btn" id="wgo" ${done?'disabled':''} onclick="wheelSpin()">Tourner</button><button class="btn alt" onclick="document.getElementById('wm').remove()">Fermer</button></div></div>`;
+ document.body.appendChild(o)}
+function wheelSpin(){
+ const w=pick([0,0,0,1,1,2,2,2,4,4,5,5,6,6,3,7]);$('#wgo').disabled=true;
+ try{localStorage.setItem('gt_day',new Date().toDateString())}catch(e){}
+ $('#dw').style.transform=`rotate(${360*5-(w*45+22.5)}deg)`;
+ let k=0;const t=setInterval(()=>tone(300+(k++%6)*40,.03,'square',.03),120);
+ setTimeout(()=>{clearInterval(t);bal+=WP[w];save();const m=$('#wmsg');if(m)m.innerHTML=`<span class="win">Vous gagnez ${fmt(WP[w])} !</span>`;if(cur=='lobby')lobby()},4400)}
+
+let snd=true,AC;
+function toggleSnd(){snd=!snd;$('#snd').textContent=snd?'🔊':'🔇'}
+function tone(f,d,t='sine',v=.08,at=0){if(!snd)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain(),s=AC.currentTime+at;o.type=t;o.frequency.value=f;o.connect(g);g.connect(AC.destination);g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.start(s);o.stop(s+d)}catch(e){}}
+const jingle=n=>[523,659,784,1047,1319,1568].slice(0,n).forEach((f,i)=>tone(f,.28,'triangle',.09,i*.09));
+document.addEventListener('click',e=>{if(e.target.closest('button'))tone(660,.05,'square',.03)});
+function burst(g){
+ const big=g>=bet*5&&g>=200,n=Math.min(44,8+Math.floor(g/25));
+ jingle(big?6:3);
+ for(let i=0;i<n;i++){const c=document.createElement('div');c.className='coin';c.textContent=pick(['🪙','🪙','✨','💰']);
+  c.style.cssText=`left:${35+rnd(30)}vw;--dx:${rnd(120)-60}vw;--dy:${-(25+rnd(40))}vh;animation-delay:${rnd(400)}ms`;
+  document.body.appendChild(c);setTimeout(()=>c.remove(),2400)}
+ if(big){const o=document.createElement('div');o.className='big';o.innerHTML=`<b>${g>=bet*20?'JACKPOT':'GROS GAIN'}</b><span>+${fmt(g)}</span>`;document.body.appendChild(o);setTimeout(()=>o.remove(),2500)}
+}
+
+/* ---------- CLASSEMENT & NIVEAUX ---------- */
+const lb=[['Léa',4200],['Max',2900],['Zoé',8100],['Tom',1500],['Inès',12500],['Sam',3300],['Nina',6700]].map(([n,b])=>({n,b}));
+const tiers=[[0,'Bronze'],[2000,'Argent'],[5000,'Or'],[15000,'Platine'],[50000,'Diamant']];
+function board(){
+ lb.forEach(x=>x.b=Math.max(200,Math.round(x.b*(.85+Math.random()*.35))));
+ const t=[...tiers].reverse().find(t=>bal>=t[0]),nx=tiers[tiers.indexOf(t)+1];
+ const all=[...lb,{n:'Vous',b:bal,me:1}].sort((a,b)=>b.b-a.b);
+ return `<div class="board"><div class="vip">Niveau ${t[1]}${nx?` · encore ${fmt(nx[0]-bal)} pour ${nx[1]}`:' · niveau maximum'}</div><h2>Classement des joueurs</h2>${all.map((x,i)=>`<div class="l ${x.me?'me':''}"><span>${i+1}. ${av(x.n)} ${x.n}</span><span>${fmt(x.b)}</span></div>`).join('')}</div>`}
+
+/* ---------- VIDÉO POKER ---------- */
+const vp={ph:'bet',h:[],hold:[],deck:[],msg:'',cls:''};
+function vpEval(h){
+ const v=h.map(c=>{const i=R.indexOf(c.r);return i?i+1:14}).sort((a,b)=>a-b);
+ const fl=h.every(c=>c.s==h[0].s),st=v.every((x,i)=>!i||x==v[i-1]+1)||v.join()=='2,3,4,5,14';
+ const cnt={};v.forEach(x=>cnt[x]=(cnt[x]||0)+1);const m=Object.values(cnt).sort((a,b)=>b-a);
+ if(st&&fl)return v[0]==10?['Quinte royale',250]:['Quinte flush',50];
+ if(m[0]==4)return['Carré',25];
+ if(m[0]==3&&m[1]==2)return['Full',9];
+ if(fl)return['Couleur',6];
+ if(st)return['Suite',4];
+ if(m[0]==3)return['Brelan',3];
+ if(m[0]==2&&m[1]==2)return['Deux paires',2];
+ if(m[0]==2&&+Object.keys(cnt).find(k=>cnt[k]==2)>=11)return['Paire de valets ou mieux',1];
+ return['Rien',0]}
+function vpView(){
+ const d=vp.ph=='draw';
+ $('#app').innerHTML=`${back}<div class="table vp"><div class="hand" style="justify-content:center;margin-top:14px">${vp.h.length?vp.h.map((c,i)=>`<button class="c ${'♥♦'.includes(c.s)?'r':''} ${vp.hold[i]?'hold':''}" ${d?`onclick="vpHold(${i})"`:'disabled'}>${c.r}${c.s}</button>`).join(''):'<span class="pay">Misez pour recevoir vos cinq cartes</span>'}</div></div>
+ <div class="msg ${vp.cls}">${d?'Touchez les cartes à garder':vp.msg}</div>
+ ${d?`<div class="row"><button class="btn" onclick="vpDraw()">Changer les autres cartes</button></div>`:`${chips()}<div class="row"><button class="btn" ${bal>=bet?'':'disabled'} onclick="vpDeal()">Distribuer · ${bet} €</button></div>`}
+ <p class="pay">Paire de valets+ ×1 · Deux paires ×2 · Brelan ×3 · Suite ×4 · Couleur ×6<br>Full ×9 · Carré ×25 · Quinte flush ×50 · Quinte royale ×250</p>`;
+}
+function vpDeal(){
+ if(bal<bet)return;bal-=bet;save();vp.mb=bet;
+ vp.deck=[].concat(...R.map(r=>S.map(s=>({r,s})))).sort(()=>Math.random()-.5);
+ vp.h=vp.deck.splice(0,5);vp.hold=[];vp.ph='draw';vp.msg='';vpView();
+}
+function vpHold(i){vp.hold[i]=!vp.hold[i];vpView()}
+function vpDraw(){
+ vp.h=vp.h.map((c,i)=>vp.hold[i]?c:vp.deck.pop());
+ const[n,m]=vpEval(vp.h),g=vp.mb*m;bal+=g;save();vp.ph='bet';
+ vp.msg=m?`${n} ! +${fmt(g-vp.mb)}`:'Rien cette fois, retentez';vp.cls=m?'win':'lose';vpView();
+}
+
+/* ---------- DÉS ---------- */
+const dc={pick:'high',r:[3,4],msg:'',cls:'',log:[]};
+const DO={low:['Moins de 7',2.2],seven:['Sept pile',5],high:['Plus de 7',2.2],dbl:['Double',5]};
+const dwin=(k,a,b)=>k=='low'?a+b<7:k=='high'?a+b>7:k=='seven'?a+b==7:a==b;
+const face=n=>'⚀⚁⚂⚃⚄⚅'[n-1];
+function dcView(){
+ $('#app').innerHTML=`${back}<div class="reels die" id="dice"><span>${face(dc.r[0])}</span><span>${face(dc.r[1])}</span></div>
+ <div class="msg ${dc.cls}">${dc.msg}</div><div class="log">${dc.log.map(l=>`<div>${l}</div>`).join('')}</div>${chips()}
+ <div class="bets">${Object.entries(DO).map(([k,[t,m]])=>`<button class="${dc.pick==k?'chip on':''}" style="${dc.pick==k?'border-radius:10px;width:auto;height:auto;border:0;padding:12px 4px':''}" onclick="dc.pick='${k}';dcView()">${t}<br><small>×${m}</small></button>`).join('')}</div>
+ <div class="row"><button class="btn" ${bal>=bet?'':'disabled'} onclick="dcRoll()">Lancer · ${bet} €</button></div>`;
+}
+function dcRoll(){
+ if(bal<bet||busy)return;busy=true;bal-=bet;save();let i=0;const el=$('#dice');
+ const t=setInterval(()=>{el.innerHTML=`<span>${face(rnd(6)+1)}</span><span>${face(rnd(6)+1)}</span>`;if(++i>12){clearInterval(t);dcEnd()}},90);
+}
+function dcEnd(){
+ const a=rnd(6)+1,b=rnd(6)+1,w=dwin(dc.pick,a,b),g=w?bet*DO[dc.pick][1]:0;bal+=g;save();
+ dc.log=['Sam','Nina'].map(n=>{const k=pick(Object.keys(DO)),x=pick([20,50,100]),ok=dwin(k,a,b);return `${av(n)} ${n} mise ${x} € sur « ${DO[k][0].toLowerCase()} » → ${ok?'✅ +'+Math.round(x*(DO[k][1]-1))+' €':'❌ −'+x+' €'}`});
+ dc.r=[a,b];dc.msg=w?`${a+b} ! Vous gagnez +${fmt(g-bet)}`:`${a+b} : perdu −${fmt(bet)}`;dc.cls=w?'win':'lose';busy=false;dcView();
+}
+
+save();lobby();
+</script>
+</body>
+</html>
